@@ -1,7 +1,7 @@
 
 // #include <QXml>
 #include <QtGui>
-#include <QtNetwork>
+#include <QNetworkReply>
 
 class Parser : public QObject
 {
