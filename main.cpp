@@ -1,13 +1,14 @@
 
-// #include <QXml>
+#include <QtXml>
 #include <QtGui>
-#include <QNetworkReply>
+#include <QtNetwork>
 
 class Parser : public QObject
 {
-Q_OBJECT
+  Q_OBJECT
   public:
-    Parser();
+//     Parser();
+    ~Parser() {};
     void setUrl(QString url) { m_url = url; }
     void parse();
 
@@ -17,13 +18,13 @@ Q_OBJECT
   private:
     QString m_url;
     QString m_params;
-    QHttp *m_http;
+//     QHttp *m_http;
 };
 
-Parser::Parser()
-{
-  m_http = new QHttp(this);
-}
+// Parser::Parser()
+// {
+//   m_http = new QHttp(this);
+// }
 
 void Parser::parse()
 {
@@ -37,7 +38,10 @@ void Parser::parse()
   manager->get(QNetworkRequest(QUrl(finalUrl)));
 }
 
+void Parser::processData(QNetworkReply *reply)
+{
 
+}
 
 int main(int argc, char** argv)
 {
