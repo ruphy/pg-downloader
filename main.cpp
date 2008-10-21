@@ -7,8 +7,6 @@ class Parser : public QObject
 {
   Q_OBJECT
   public:
-//     Parser();
-    ~Parser() {};
     void setUrl(QString url) { m_url = url; }
     void parse();
 
@@ -20,11 +18,6 @@ class Parser : public QObject
     QString m_params;
 //     QHttp *m_http;
 };
-
-// Parser::Parser()
-// {
-//   m_http = new QHttp(this);
-// }
 
 void Parser::parse()
 {
@@ -53,3 +46,4 @@ int main(int argc, char** argv)
 }
 
 
+#include "main.moc"
