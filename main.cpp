@@ -123,6 +123,9 @@ void Parser::parse(QIODevice *d)
 
         forever {
             if (isStartElement() && name() == "p" && attributes().value("class") == "tel") {
+                while (name() != "span" || !isEndElement()) {
+                    readNext();
+                }
                 while (i->tel.isEmpty()) {
                     readNext();
                     if (tokenType() == QXmlStreamReader::Characters) {
