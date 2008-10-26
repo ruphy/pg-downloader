@@ -6,15 +6,15 @@
 
 class Item
 {
-  public:
+public:
     QString name, cap, locality, region, address, tel;
 };
 
 class Parser : public QXmlStreamReader
 {
-  public:
+public:
     void parse(QIODevice*);
-  private:
+private:
     void readClient();
 
     QList<Item*> items;
@@ -23,34 +23,59 @@ class Parser : public QXmlStreamReader
 void Parser::parse(QIODevice *d)
 {
     setDevice(d);
-    
+
     while (!atEnd()) {
-        
+
         readNext();
         if (hasError()) {
             qDebug() << "ERROR!!!";
         }
-        
-    //     if (isStartElement() && name() == "div" && attributes().value("class") == "client-identifying-pg") {
 
-    //       qDebug() << text().toString().toUtf8();
-    //       while ((!isEndElement()) && name() == "div" && attributes().value("class") == "client-identifying-pg") {
-    // 	readNext();
+        //     if (isStartElement() && name() == "div" && attributes().value("class") == "client-identifying-pg") {
 
+        //       qDebug() << text().toString().toUtf8();
+        //       while ((!isEndElement()) && name() == "div" && attributes().value("class") == "client-identifying-pg") {
+        //  readNext();
+
+        Item *i = new Item;
+
+        forever {
             if (isStartElement() && name() == "h3" && attributes().value("class") == "org") { // Process informations for one company
-            Item *i = new Item;
-            while (i->name.isEmpty()) {
-                readNext();
-                if (tokenType() == QXmlStreamReader::Characters) {
-                    i->name = text().toString();
+                while (i->name.isEmpty()) {
+                    readNext();
+                    if (tokenType() == QXmlStreamReader::Characters) {
+                        i->name = text().toString();
+                    }
                 }
+                break;
             }
-        items << i;
+            if (atEnd()) {
+                break;
+            }
+            readNext();
         }
+
+        forever {
+            if (isStartElement() && name() == "span" && attributes().value("class") == "postal-code") { // Process informations for one company
+                while (i->cap.isEmpty()) {
+                    readNext();
+                    if (tokenType() == QXmlStreamReader::Characters) {
+                        i->cap = text().toString();
+                    }
+                }
+                break;
+            }
+            if (atEnd()) {
+                break;
+            }
+            readNext();
+        }
+
+        items << i;
     }
-    
+
     foreach(Item *item, items) {
-        qDebug() << item->name;
+        qDebug() << item->name << item->cap;
     }
 }
 
@@ -65,17 +90,17 @@ void Parser::readClient()
 
 int main(int argc, char** argv)
 {
-  QApplication a(argc, argv);
-  Parser p;
-  QFile *f = new QFile("test.html");
+    QApplication a(argc, argv);
+    Parser p;
+    QFile *f = new QFile("test.html");
 //   qDebug() << f->exists();
-  f->open(QIODevice::ReadOnly);
-  p.parse(f);
-  f->close();
-  
+    f->open(QIODevice::ReadOnly);
+    p.parse(f);
+    f->close();
+
 
 //   a.exec();
 }
 
 
-#include "main.moc"
+//#include "main.moc"
