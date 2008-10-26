@@ -14,6 +14,7 @@ class Parser : public QXmlStreamReader
 {
 public:
     void parse(QIODevice*);
+    void generateCSV(const QString &outFile = "out.csv");
 private:
     void readClient();
 
@@ -148,6 +149,26 @@ void Parser::parse(QIODevice *d)
     }
 }
 
+void Parser::generateCSV(const QString &outFile)
+{
+    QFile file(outFile);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text)) {
+        return;
+    }
+
+    QTextStream out(&file);
+    out << "NOME,CAP,LOCALITA,REGIONE,INDIRIZZO,TELEFONO\n";
+
+    foreach(Item *itm, items) {
+        QString line = QString("%1,%2,%3,%4,%5,%6\n").arg(itm->name).arg(itm->cap).arg(itm->locality)
+                       .arg(itm->region).arg(itm->address).arg(itm->tel);
+        out << line;
+    }
+
+    file.close();
+}
+
 void Parser::readClient()
 {
 //   forever {
@@ -165,6 +186,7 @@ int main(int argc, char** argv)
 //   qDebug() << f->exists();
     f->open(QIODevice::ReadOnly);
     p.parse(f);
+    p.generateCSV();
     f->close();
 
 
